@@ -1,2 +1,79 @@
-<p>user-management works!</p>
-<app-button></app-button>
+<div class="user-management">
+  <h1>User Management</h1>
+  
+  <div class="actions">
+    <input type="text" placeholder="Search users" class="search-input">
+    <button class="search-button">Search</button>
+    <button class="add-user-button" (click)="openAddModal()">+ Add New User</button>
+  </div>
+
+  <table class="user-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let user of users">
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td class="actions-cell">
+            <button class="more-button" (click)="toggleUserDetails(user.id)">More</button>
+            <button class="edit-button" (click)="openEditModal(user)">Edit</button>
+            <button class="delete-button" (click)="deleteUser(user.id)">Delete</button>
+          </td>
+        </tr>
+        <tr *ngIf="expandedUserId === user.id" class="expanded-row">
+          <td colspan="5">
+            <div class="user-details">
+              <p><strong>Company:</strong> {{ user.company?.name }}</p>
+              <p><strong>Address:</strong> {{ user.address?.street }}, {{ user.address?.city }}</p>
+              <p><strong>Phone:</strong> {{ user.phone }}</p>
+              <p><strong>Website:</strong> {{ user.website }}</p>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+
+  <!-- Modal for Add/Edit User -->
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-content">
+      <h2>{{ modalMode === 'add' ? 'Add New User' : 'Edit User' }}</h2>
+      <form (ngSubmit)="saveUser()">
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" [(ngModel)]="currentUser.name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" [(ngModel)]="currentUser.username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" [(ngModel)]="currentUser.email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone:</label>
+          <input type="tel" id="phone" [(ngModel)]="currentUser.phone" name="phone">
+        </div>
+        <div class="form-group">
+          <label for="website">Website:</label>
+          <input type="text" id="website" [(ngModel)]="currentUser.website" name="website">
+        </div>
+        <div class="modal-actions">
+          <button type="submit">Save</button>
+          <button type="button" (click)="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
